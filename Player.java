@@ -1,3 +1,25 @@
+/**
+   This is a class that asks the player to write the necessary IP Address and port number so that they can connect to the server.
+   It contains the necessary threads for input and output streams to be received and sent respectively. 
+  
+    @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
+    @version May 15, 2023
+**/
+
+/*
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+*/
+
 import java.io.*;
 import java.net.*;
 import java.util.*;
@@ -12,7 +34,7 @@ public class Player {
     private WriteToServer wtsRunnable; 
 
 
-
+    // The Player constructor that instantiates gameFrame and calls the methods connectToServer before setting up its GUI. 
     public Player() {
         System.out.println("---- CLIENT ----");
 
@@ -22,6 +44,7 @@ public class Player {
 
     }
 
+    // A method allows the player to connect to the server and assigns a player number to their respective GUIs. 
     private void connectToServer() {
         try {
             
@@ -53,6 +76,7 @@ public class Player {
         }
     }
 
+    // A private class that reads an integer from the server and sets this integer as the current game state. 
     private class ReadFromServer implements Runnable {
         private DataInputStream CReadIn; 
 
@@ -79,6 +103,8 @@ public class Player {
             }
         }
 
+
+        // A method that waits for a String to be sent from GameServer so that the read and write threads can start. 
         public void waitForStartMessage() {
             try {
                 String startMessage = CReadIn.readUTF();
@@ -95,6 +121,7 @@ public class Player {
         }
     }
 
+    // A private class that writes an integer to the server which shall serve as the player's current state and will be mirrored to the other player's gameState. 
     private class WriteToServer implements Runnable {
         private DataOutputStream CWriteOut; 
 
@@ -113,9 +140,7 @@ public class Player {
                     if(checkCanvas != null) { 
                         int currentState = gameFrame.getGameCanvas().getCurrentState();
                         CWriteOut.writeInt(currentState);
-                        CWriteOut.flush();
-                        System.out.println("WTS: Game State " + currentState); 
-                        System.out.println("Over here in the Player class"); 
+                        CWriteOut.flush();               
 
                     }
                     

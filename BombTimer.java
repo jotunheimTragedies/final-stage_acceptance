@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.io.*;
 import java.awt.event.*;
@@ -46,7 +47,8 @@ public class BombTimer extends JPanel implements ModuleTemplate {
         repaint();
 
     }
-    
+    // Method inherited from the ModuleTemplate interface that formats the countdown timer. 
+        // Source: https://www.youtube.com/watch?v=zWw72j-EbqI
     @Override
     public void setUpComponents() {
         countdownTimer = new Timer(1000, new ActionListener() {

@@ -1,3 +1,25 @@
+/**
+    This is the class for the simonsays module puzzle. This is where all the functionality needed for the simonsays puzzle resides.
+    The entire module is made by the help of https://www.youtube.com/watch?v=_YOgn2VgXOU&t=1788s
+
+    @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
+    @version May 15, 2023
+**/
+
+/*
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+*/
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,9 +32,9 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
     public int flashed, ticks, dark, i, u, indexPattern, k;
     public ArrayList<Integer> currentPattern;
 
+    //contains the panels, the randomizer, the timer.
     public JPanel backpanel, testpanel;
     public Random random;
-    public Timer timer;
     public Timer numtimer;
 
     //all of the images for the colors
@@ -25,8 +47,10 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
     public ImageIcon greenimage;
     public ImageIcon greendark;
     
-    public boolean makePattern, pressed, SimonStrike, struck, omgiwon;
+    //booleans of reading various states such as winning, losing and striking
+    public boolean makePattern, pressed, SimonStrike, struck, winLoseState;
 
+    //buttons
     public JButton red, green, yellow, blue;
 
     public SimonSays(){
@@ -45,7 +69,7 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
         SimonStrike = false;
         pressed = false;
         struck = false;
-        omgiwon = false;
+        winLoseState = false;
         
         setLayout(new GridLayout(1,1,10,10));
         backpanel = new JPanel();
@@ -70,16 +94,15 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
 
                 if(makePattern){
                     if(dark <= 0){
-                        if(indexPattern >= currentPattern.size()){
+                        if(indexPattern >= currentPattern.size()){ //this adds to the sequence when the patternmaking is on
                             flashed = random.nextInt(40) % 4 + 1;
-                            //System.out.println(flashed);
                             currentPattern.add(flashed);
                             indexPattern = 0;
                             makePattern = false;
 
                         }else{
-                            if(currentPattern.size() == 6){
-                                omgiwon = true;
+                            if(currentPattern.size() == 6){ //this is the amount of round that the person has to endure in order to win. 6 rounds are needed 
+                                winLoseState = true;
                                 numtimer.stop();
                                 backpanel.remove(red);
                                 backpanel.remove(blue);
@@ -144,8 +167,6 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
         blueimage = new ImageIcon("Modules/SimonSaysImages/blue.png");
         bluedark = new ImageIcon("Modules/SimonSaysImages/darkblue.png");
         
-        //testpanel.setBackground(Color.RED);
-
         numtimer.start();
         setBackground(Color.GRAY);
         setUpComponents();
@@ -158,7 +179,7 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
         add(backpanel);
     
      } 
-
+    //this method restarts the entire simonsays phase as if it were a new game
     public void start(){
         indexPattern = 0;
         currentPattern = new ArrayList<Integer>();
@@ -167,9 +188,7 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
     }
 
 
-    public void setUpComponents(){
-    
-
+    public void setUpComponents(){ //sets up the buttons for their functionality.
 
     red = new JButton(redimage);
     red.addActionListener(new ActionListener(){  
@@ -177,14 +196,15 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
                 red.setIcon(reddark);
                 red.setIcon(redimage);
 
+                //this is the pressed red in order to start the game
                 if(k == 0){
                     start();
                     k++;
                 }
                 
+                
                 if(currentPattern.get(indexPattern) == 1){
                     indexPattern++;
-                    //System.out.println(indexPattern);
                 }else{
                     SimonStrike = true;
                 }
@@ -193,19 +213,20 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
                 }
                 ticks = 1;
         }
-    });  
+    });   
 
     yellow = new JButton(yellowimage);
     yellow.addActionListener(new ActionListener(){  
         public void actionPerformed(ActionEvent e){  
             yellow.setIcon(yellowdark);
             yellow.setIcon(yellowimage);
+            
             if(currentPattern.get(indexPattern) == 2){
                 indexPattern++;
-                //System.out.println(indexPattern);
-            }else{
+            } else {
                 SimonStrike = true;
             }
+            
             if(SimonStrike){
                 start();
             }
@@ -215,15 +236,17 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
 
     green = new JButton(greenimage);
     green.addActionListener(new ActionListener(){  
+        
         public void actionPerformed(ActionEvent e){  
             green.setIcon(greendark);
             green.setIcon(greenimage);
+            
             if(currentPattern.get(indexPattern) == 3){
                 indexPattern++;
-                //System.out.println(indexPattern);
-            }else{
+            } else {
                 SimonStrike = true;
             }
+            
             if(SimonStrike){
                 start();
             }
@@ -233,15 +256,17 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
 
     blue = new JButton(blueimage);
     blue.addActionListener(new ActionListener(){  
+        
         public void actionPerformed(ActionEvent e){  
             blue.setIcon(bluedark);
             blue.setIcon(blueimage);
+            
             if(currentPattern.get(indexPattern) == 4){
                 indexPattern++;
-                //System.out.println(indexPattern);
-            }else{
+            } else {
                 SimonStrike = true;
             }
+            
             if(SimonStrike){
                 start();
             } 
@@ -253,5 +278,9 @@ public class SimonSays extends JPanel implements ActionListener, ModuleTemplate{
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {}    
+    public void actionPerformed(ActionEvent e) {} //to quell the actionevent import    
+
+    public boolean getWinLoseState() { 
+        return winLoseState; 
+    }
 }

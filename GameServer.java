@@ -1,3 +1,25 @@
+/**
+   This is a class that allows two clients to connect to a server. 
+   It contains the necessary threads for input and output streams to be received and sent respectively. 
+  
+    @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
+    @version May 15, 2023
+**/
+
+/*
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+*/
+
 import java.io.*;
 import java.net.*;
 
@@ -17,7 +39,7 @@ public class GameServer {
     private int p1GameState; 
     private int p2GameState; 
     
-
+    // The GameServer() constructor that instantiates the number of players, game states for both players, and accepts client connections.
     public GameServer() {
         System.out.println("---- GAME SERVER ----");
         numPlayers = 0; 
@@ -27,8 +49,7 @@ public class GameServer {
         p2GameState = 0;
 
         try {
-            serverSocket = new ServerSocket(65000);
-
+            serverSocket = new ServerSocket(63888);
 
         } catch(IOException ex) {
             System.out.println("IOException from GameServer constructor");
@@ -36,6 +57,7 @@ public class GameServer {
         }
     }
 
+    // A method that creates a Socket object whenever a client accepts. Constructs the necessary Input and OutputStreams as well as the necessary Runnables per player. 
     public void acceptConnections() {
         try {
             System.out.println("Waiting for connections...");
@@ -85,6 +107,7 @@ public class GameServer {
         }
     }
 
+    // A private class that reads an integer from either client to update the game states for each player. 
     private class ReadFromClient implements Runnable {
         private int playerID; 
         private DataInputStream SReadIn; 
@@ -102,20 +125,20 @@ public class GameServer {
                 while(true) {
                     if(playerID == 1) {
                         p1GameState = SReadIn.readInt();
-                        System.out.println("RFC: Player 1 Game State " + p1GameState);
-                    
+                        
                     } else {
                         p2GameState = SReadIn.readInt();
-                        System.out.println("RFC: Player 2 Game State " + p1GameState);
+                        
                     }
-
                 }
+
             } catch(IOException ex) {
                 System.out.println("IOException from ReadFromClient run()");
             }
         }
     }
 
+    // A private class that sends an integer to both clients to update the game states for each player. 
     private class WriteToClient implements Runnable {
         private int playerID; 
         private DataOutputStream SWriteOut; 
@@ -134,17 +157,16 @@ public class GameServer {
                     if(playerID == 1) {
                         SWriteOut.writeInt(p2GameState);
                         SWriteOut.flush();
-                        System.out.println("WTC: Game State " + p2GameState);
-                        System.out.println("Over here in the Server class"); 
+                        
                     
                     } else {
                         SWriteOut.writeInt(p1GameState);
-                        System.out.println("WTC: Game State " + p1GameState);
-                        System.out.println("Over here in the Server class"); 
+                        
                     }
 
                     try {
                         Thread.sleep(25); 
+
                     } catch(InterruptedException ex) {
                         System.out.println("InterruptedException from WriteToClient run()");
                     }
@@ -155,15 +177,18 @@ public class GameServer {
             }
         }
         
+        // A method that sends a message to both players that shall initialize their respective GUIs. 
         public void sendStartMessage() {
             try {
                 SWriteOut.writeUTF("We now have 2 players. Good luck!");
+            
             } catch(IOException ex) {
                 System.out.println("IOException from WriteToClient sendStartMessage()");
             }
         }
     }
 
+    // The main method of GameServer that allows client-server connections. 
     public static void main(String[] args) {
         GameServer gs = new GameServer();
         gs.acceptConnections();

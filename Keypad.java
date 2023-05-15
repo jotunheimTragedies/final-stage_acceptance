@@ -1,4 +1,25 @@
-import java.awt.event.ActionListener;
+/**
+    This is the class for the Keypad module puzzle. This is where all the functionality needed for the keypad puzzle resides.
+
+    @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
+    @version May 15, 2023
+**/
+
+/*
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+*/
+
+import java.awt.event.*;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,16 +28,18 @@ import java.util.Random;
 import java.util.Collections;
 
 public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
-
+    //makes the timer
     public Timer timer;
-
+    //makes the main panel where everything is inserted
     public JPanel backpanel;
 
+    //the buttons for each of the symbols
     public JButton Icon1;
     public JButton Icon2;
     public JButton Icon3;
     public JButton Icon4;
 
+    //a lot of images for each symbol individually in each of the three columns
     public ImageIcon C1S1;
     public ImageIcon C1S2;
     public ImageIcon C1S3;
@@ -41,28 +64,34 @@ public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
     public ImageIcon C3S6;
     public ImageIcon C3S7;
 
+    //this is the variable for the chosen symbols
     public ImageIcon image1;
     public ImageIcon image2;
     public ImageIcon image3;
     public ImageIcon image4;
+
 
     public int width = 300;
     public int height = 200;
     public int selectedcol;
     public int colindex;
     public int i, index1, index2, index3, index4, j, num1, num2, num3, num4, a, b, c, d, u;
+
+    //array lists of selection of the columns, then from the columns it will choose the four symbols.
     public ArrayList<ImageIcon> column1 = new ArrayList<>();
     public ArrayList<ImageIcon> column2 = new ArrayList<>();
     public ArrayList<ImageIcon> column3 = new ArrayList<>();
     public ArrayList<Integer> nums = new ArrayList<>();
+    //after everything has been chosen, it will be stored in another arraylist and compared to this arraylist
     public ArrayList<Integer> selectednums = new ArrayList<>();
+    //the buttons you decided to press will be stored in this and will be compared to the chosen ordered symbols
     public ArrayList<Integer> buttonspressed = new ArrayList<>();
     public ArrayList<ImageIcon> chosencol;
 
     public boolean button1pressed;
     public boolean pressed;
     public boolean found = false;
-    public boolean struck, omgiwon;
+    public boolean struck, winLoseState;
 
     public Random randomcol;
 
@@ -73,7 +102,7 @@ public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
         backpanel.setLayout(new GridLayout(2,2,10,10));
         randomcol = new Random();
         struck = false;
-        omgiwon = false;
+        winLoseState = false;
 
 
         //images used for the symbols
@@ -134,13 +163,13 @@ public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
         nums.add(5);
         nums.add(6);
 
-
+        //this portion checks if the player has solved the puzzle
         timer = new Timer(1000, new ActionListener() {
 			public void actionPerformed(ActionEvent e){
                 
                 if(selectednums.equals(buttonspressed)){
                     timer.stop();
-                    omgiwon = true;
+                    winLoseState = true;
                     backpanel.remove(Icon1);
                     backpanel.remove(Icon2);
                     backpanel.remove(Icon3);
@@ -153,6 +182,7 @@ public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
 			}
 		});
 
+        //this generates the columns that the player will be playing on
         selectedcol = randomcol.nextInt(3);
 
         switch(selectedcol){
@@ -189,6 +219,8 @@ public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
         index3 = selectednums.get(2);
         index4 = selectednums.get(3);
 
+
+        //this one assigns an image to a variable depending on the column they got
         i = 0;
         while(!found){
             if(image1 == chosencol.get(j)){
@@ -251,48 +283,51 @@ public class Keypad extends JPanel implements ActionListener, ModuleTemplate {
         add(backpanel);
     }
 
+    //this restarts the entire game if a player did it wrong
     public void start(){
         buttonspressed = new ArrayList<>();
         u++;
         struck = true;
     }
 
-    public boolean solved(boolean i){
-        return i;
-    }
-
+    //sets up the buttons of the game
     public void setUpComponents(){
         Icon1 = new JButton(image1);
         Icon1.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                 buttonspressed.add(num1);
-                    }  
+            }  
         }); 
 
         Icon2 = new JButton(image2);
         Icon2.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                 buttonspressed.add(num2);
-                    }  
+            }  
         }); 
 
         Icon3 = new JButton(image3);
         Icon3.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                 buttonspressed.add(num3);
-                    }  
+            }  
         }); 
 
         Icon4 = new JButton(image4);
         Icon4.addActionListener(new ActionListener(){  
             public void actionPerformed(ActionEvent e){  
                 buttonspressed.add(num4);
-                    }  
+            }  
         }); 
 
     }
 
+    //to quell the needs of the actionevent import
     @Override
     public void actionPerformed(ActionEvent e) {}
+
+    public boolean getWinLoseState() {
+        return winLoseState; 
+    }
     
 }

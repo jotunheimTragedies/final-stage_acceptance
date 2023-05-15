@@ -1,7 +1,27 @@
-import java.awt.*;
-import javax.sound.sampled.*;
-import javax.swing.*;
+/**
+    This is a class responsible for creating the JFrame for the GUI. 
+    It contains functions such as transitiontoGameplayState() and transitiontoWinorOverState() to swap the canvases to their respective frames.
 
+    @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
+    @version May 15, 2023
+**/
+
+/*
+    I have not discussed the Java language code in my program
+    with anyone other than my instructor or the teaching assistants
+    assigned to this course.
+
+    I have not used Java language code obtained from another student,
+    or any other unauthorized source, either modified or unmodified.
+
+    If any Java language code or documentation used in my program
+    was obtained from another source, such as a textbook or website,
+    that has been clearly noted with a proper citation in the comments
+    of my program.
+*/
+
+import java.awt.*;
+import javax.swing.*;
 
 public class GameFrame {
     private int width; 
@@ -10,15 +30,12 @@ public class GameFrame {
 
     private JFrame gameFrame; 
     private GameCanvas gameCanvas;
-    private MusicPlayer musicPlayer; 
     private ModuleCanvas moduleCanvas;
     private OverCanvas overCanvas; 
     private WinCanvas winCanvas;
-    private explosion explosion;
-
     public int playerID; 
 
-
+    // The GameFrame constructor that instantiates the necessary canvases using the arguments passed in for width and height. 
     public GameFrame(int w, int h) {
         width = w; 
         height = h; 
@@ -31,6 +48,7 @@ public class GameFrame {
 
     }
 
+    // The setupGUI() method is responsible for customizing the JFrame and adding gameCanvas to the frame. 
     public void setUpGUI() {
         Container cp = gameFrame.getContentPane();
         cp.add(gameCanvas, BorderLayout.CENTER);
@@ -42,11 +60,11 @@ public class GameFrame {
         gameFrame.setVisible(true);
 
         transitiontoGameplayState();
-        transitiontoOverState();
-        transitiontoWinState();
+        transitiontoWinorOverState();
 
     }
 
+    // The transitiontoGameplayState() method constantly checks for the current gameState, starts the music, and adds moduleCanvas. 
     public void transitiontoGameplayState() {
         while(true) {
             int currentState = gameCanvas.getCurrentState();
@@ -54,14 +72,12 @@ public class GameFrame {
             if(currentState == gameCanvas.titleState) {
                 
                 try {
-                    System.out.println();
                     Thread.sleep(5000);
                 
                     
                 } catch(InterruptedException ex) {
                     System.out.println("InterruptedException from transitiontoGameplay()");
                 } 
-
             }
 
             if(currentState == gameCanvas.gameplayState) {
@@ -83,21 +99,33 @@ public class GameFrame {
         cp2.repaint();
         cp2.revalidate();
     }
-
-    public void transitiontoOverState() {
+    
+    // The transitiontoWinorOverState() method constantly checks for the current gameState and the time left from bombTimer, and adds necessary canvases (winCanvas or overCanvas) based on whether or not the player has accomplished the modules. 
+    public void transitiontoWinorOverState() {
         while(true) {
             int currentState = gameCanvas.getCurrentState();
             
             if(currentState == gameCanvas.gameplayState) {
+                SimonSays simonModule = moduleCanvas.getSimonSays();
+                boolean simonWinState = simonModule.getWinLoseState();
+                
+                Keypad keypadModule = moduleCanvas.getKeypad();
+                boolean keypadWinState = keypadModule.getWinLoseState();
+                
                 
                 BombTimer timerBomb = moduleCanvas.getBombTimer();
                 int zeroMinutes = timerBomb.getMinutesLeft();
                 int zeroSeconds = timerBomb.getSecondsLeft();
-               
-                if((zeroMinutes == 0 && zeroSeconds == 0) || moduleCanvas.strikesModule.playerloses == true) {
+
+                if((simonWinState == true) && (keypadWinState == true)) {
+                    gameCanvas.gameState = gameCanvas.congratulationsState;
+                    gameFrame.getContentPane().removeAll();
+                    gameFrame.repaint();
+                    gameFrame.revalidate();
+                    break;
+
+                } else if((zeroMinutes == 0 && zeroSeconds == 0) || moduleCanvas.strikesModule.playerloses == true) {
                     gameCanvas.gameState = gameCanvas.gameoverState;
-                    Clip musicClip = musicPlayer.getMusicClip();
-                    musicClip.stop();
                     gameFrame.getContentPane().removeAll();
                     gameFrame.repaint();
                     gameFrame.revalidate();
@@ -105,7 +133,6 @@ public class GameFrame {
                 }
 
                 try {
-                    System.out.println();
                     Thread.sleep(5000);
 
                 } catch(InterruptedException ex) {
@@ -115,52 +142,22 @@ public class GameFrame {
             
         }
         
-        Container cp3 = gameFrame.getContentPane();
-        cp3.add(overCanvas, BorderLayout.CENTER);
-        cp3.repaint();
-        cp3.revalidate();
-
-    }
-
-    public void transitiontoWinState() {
-        while(true) {
-            int currentState = gameCanvas.getCurrentState();
-            if(currentState == gameCanvas.congratulationsState) {
-                
-                boolean simonWin = moduleCanvas.simonModule.omgiwon;
-                boolean keypadWin = moduleCanvas.keypadModule.omgiwon;
-
-                System.out.println(simonWin);
-                System.out.println(keypadWin);
-               
-                if((simonWin == true && keypadWin == true)) {
-                    gameCanvas.gameState = gameCanvas.congratulationsState;
-                    Clip musicClip = musicPlayer.getMusicClip();
-                    musicClip.stop();
-                    gameFrame.getContentPane().removeAll();
-                    gameFrame.repaint();
-                    gameFrame.revalidate();
-                    break;
-                }
-
-                try {
-                    System.out.println();
-                    Thread.sleep(5000);
-
-                } catch(InterruptedException ex) {
-                    System.out.println("InterruptedException from transitiontoWinState()");
-                }
-            }
-            
+        if(gameCanvas.gameState == gameCanvas.gameoverState) {
+            Container cp3 = gameFrame.getContentPane();
+            cp3.add(overCanvas, BorderLayout.CENTER);
+            cp3.repaint();
+            cp3.revalidate();
         }
-    
-        Container cp4 = gameFrame.getContentPane();
-        cp4.add(winCanvas, BorderLayout.CENTER);
-        cp4.repaint();
-        cp4.revalidate();
 
+        if(gameCanvas.gameState == gameCanvas.congratulationsState) {
+            Container cp4 = gameFrame.getContentPane();
+            cp4.add(winCanvas, BorderLayout.CENTER);
+            cp4.repaint();
+            cp4.revalidate();
+        }
     }
-
+    
+    // Getter method so that gameCanvas can be accessed by other classes 
     public GameCanvas getGameCanvas() {
         return gameCanvas; 
     }
