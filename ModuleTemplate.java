@@ -1,5 +1,6 @@
 /**
     This is an interface responsible for setting up the swing components for the bomb's modules and manuals. 
+    It will be inherited by the classes that will be included in the moduleCanvas. 
 
     @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
     @version May 15, 2023

@@ -1,6 +1,6 @@
 /**
     This is the class that generates the instructions needed for the keypad puzzle. This sets up the needed information for the keypad,
-    basically acting as a manual
+    basically acting as a manual.
 
     @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
     @version May 15, 2023

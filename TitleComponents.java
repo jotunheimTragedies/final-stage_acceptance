@@ -1,5 +1,6 @@
 /**
     This is a class responsible for creating the components when the game is in the titleState. 
+    It implements the method from PagesTemplate to create these components. 
 
     @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
     @version May 15, 2023

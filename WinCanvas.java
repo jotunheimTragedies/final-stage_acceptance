@@ -1,6 +1,6 @@
 /**
     This is the class that generates the winning canvas when the player wins. This class is called when the player wins
-    and sets up the winning stage
+    and sets up the winning stage.
 
     @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
     @version May 15, 2023

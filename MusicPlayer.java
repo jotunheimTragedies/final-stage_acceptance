@@ -1,5 +1,6 @@
 /**
     This is a class responsible for playing the music. 
+    It will be called when both players are in the gameplayState. 
 
     @author Sophia Avielle Gregorio (223019) & Patricia Angeline Tan (226189)
     @version May 15, 2023
